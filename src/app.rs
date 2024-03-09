@@ -1,10 +1,13 @@
-use leptos::ev::KeyboardEvent;
+use leptos::ev::Event;
 use leptos::{leptos_dom::logging::console_log, *};
 use leptos_meta::*;
 use leptos_router::*;
 use serde::{Deserialize, Serialize};
 
-use crate::content::{ME, WHOAMI};
+use crate::content::EXPERIENCE;
+use crate::content::HELP;
+use crate::content::SKILLS;
+use crate::content::WHOAMI;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Content {
@@ -33,12 +36,46 @@ pub fn App() -> impl IntoView {
 
 #[component]
 fn HomePage() -> impl IntoView {
-    let on_enter = move |key: KeyboardEvent| console_log(format!("key {:?}", key.key()).as_str());
     view! {
-        <h1 class="text-ct-red">{WHOAMI}</h1>
-        <h1 class="">{ME.whoami}</h1>
-        <h1 class="">{ME.skills.desc}</h1>
-        <input on:keydown=on_enter type="text" class="appearance-none border border-none rounded-md py-2 px-4 focus:outline-none focus:border-none bg-ct-base caret-ct-red"/>
+        <Prompt />
+    }
+}
+
+fn check_command(c: &str) -> bool {
+    let commands = [WHOAMI, SKILLS, EXPERIENCE, HELP];
+    for i in commands {
+        if c == i {
+            console_log("exist");
+            return true;
+        }
+    }
+    false
+}
+
+#[component]
+fn Prompt() -> impl IntoView {
+    let (inp, set_inp) = create_signal("".to_string());
+    let (entered_command, set_entered_command) = create_signal("".to_string());
+
+    let on_enter = move |key: Event| {
+        let entered = event_target_value(&key);
+        if check_command(&entered) {
+            set_entered_command.set(entered);
+            set_inp.set("".to_string());
+            console_log(format!("{:?}", inp.get()).as_str());
+            console_log(format!("{:?}", entered_command.get()).as_str());
+        } else {
+            console_log("not found");
+            set_inp.set("".to_string());
+        }
+    };
+
+    view! {
+    <h1 class="text-ct-red">portfolio</h1>
+            <div class="flex flex-row w-full">
+    <div class="text-ct-pink h-8">">"</div>
+        <input on:change=on_enter type="text" class="appearance-none border border-none rounded-md focus:outline-none focus:border-none bg-ct-base caret-ct-red pb-2 mx-2 w-full" autofocus prop:value=inp/>
+            </div>
     }
 }
 
