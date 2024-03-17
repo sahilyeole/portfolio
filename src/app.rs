@@ -8,6 +8,7 @@ use crate::content::EXPERIENCE;
 use crate::content::HELP;
 use crate::content::SKILLS;
 use crate::content::WHOAMI;
+use crate::minimal::Minimal;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Content {
@@ -21,9 +22,9 @@ pub fn App() -> impl IntoView {
 
     view! {
         <Stylesheet id="leptos" href="/pkg/portfolio.css"/>
-        <Title text="Welcome to Leptos"/>
+        <Title text="Sahil's portfolio"/>
         <Router>
-            <main class="bg-ct-base my-0 mx-auto h-screen w-screen text-ct-pink">
+            <main class="bg-base my-0 mx-auto min-h-screen h-full w-screen text-default">
                 <Routes>
                     <Route path="" view=HomePage/>
                     <Route path="/minimal" view=Minimal/>
@@ -36,7 +37,14 @@ pub fn App() -> impl IntoView {
 
 #[component]
 fn HomePage() -> impl IntoView {
+    let (cc, set_cc) = create_signal(0);
+
     view! {
+        // <For
+        // each = cc
+        // key = |cc|
+        //
+        // />
         <Prompt />
     }
 }
@@ -71,21 +79,11 @@ fn Prompt() -> impl IntoView {
     };
 
     view! {
-    <h1 class="text-ct-red">portfolio</h1>
+    <h1 class="text-red">portfolio</h1>
             <div class="flex flex-row w-full">
-    <div class="text-ct-pink h-8">">"</div>
-        <input on:change=on_enter type="text" class="appearance-none border border-none rounded-md focus:outline-none focus:border-none bg-ct-base caret-ct-red pb-2 mx-2 w-full" autofocus prop:value=inp/>
+    <div class="text-pink h-8">">"</div>
+        <input on:change=on_enter type="text" class="appearance-none border border-none rounded-md focus:outline-none focus:border-none bg-base caret-red pb-2 mx-2 w-full" autofocus prop:value=inp/>
             </div>
-    }
-}
-
-#[component]
-fn Minimal() -> impl IntoView {
-    let (count, set_count) = create_signal(0);
-    let on_click = move |_| set_count.update(|count| *count += 1);
-    view! {
-        <h1 class="text-ct-red">"Welcome to minimal view"</h1>
-        <button on:click=on_click>"Click Me: " {count}</button>
     }
 }
 
@@ -99,6 +97,6 @@ fn NotFound() -> impl IntoView {
     }
 
     view! {
-        <h1>"Not Foundfsfesf"</h1>
+        <h1>"404: Not Found"</h1>
     }
 }
